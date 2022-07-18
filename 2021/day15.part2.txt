@@ -1,0 +1,26 @@
+You are now connected to database "postgres" as user "postgres".
+--- Day 15: Chiton ---
+Timing is on.
+CREATE TABLE
+Time: 23.306 ms
+CREATE TABLE
+Time: 11.086 ms
+CREATE TABLE
+Time: 11.197 ms
+COPY 100
+Time: 2.873 ms
+INSERT 0 250000
+Time: 1315.089 ms (00:01.315)
+CREATE INDEX
+Time: 112.703 ms
+INSERT 0 998000
+Time: 7967.505 ms (00:07.968)
+  max   |    max    
+--------+-----------
+ 250000 |      2904
+ 250000 |      2904
+      1 | 295836734
+(3 rows)
+
+Time: 2117797.104 ms (35:17.797)
+Time: 0.715 ms

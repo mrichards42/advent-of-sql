@@ -1,0 +1,16 @@
+# This was originally written using an older version of sqlfluff . . . newer
+# versions seem to produce a lot more errors ¯\_(ツ)_/¯
+
+[sqlfluff]
+dialect = postgres
+# L018: CTE closing paren -- this is just for https://github.com/sqlfluff/sqlfluff/issues/2136
+# L022: CTE spacing -- this also ignores https://github.com/sqlfluff/sqlfluff/issues/2136
+# L052: Allow semicolon to appear anywhere
+exclude_rules = L018,L022,L052
+
+[sqlfluff:rules]
+tab_space_size = 2
+max_line_length = 100
+
+[sqlfluff:rules:L010]
+capitalisation_policy = lower

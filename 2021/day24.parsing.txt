@@ -1,0 +1,246 @@
+/*
+each segment looks like:
+
+inp w
+mul x 0
+add x z 
+mod x 26
+div z 1   <- 1,1,1,1,1,26,1,26,26,1,26,26,26,26
+add x 10  <- 10,12,10,12,11,-16,10,-11,-13,13,-8,-1,-4,-14
+eql x w 
+eql x 0 
+mul y 0 
+add y 25
+mul y x 
+add y 1 
+mul z y 
+mul y 0 
+add y w 
+add y 12  <- 12,7,8,8,15,12,8,13,3,13,3,9,4,13
+mul y x 
+add z y 
+*/
+
+function literalTranslation(arg1, arg2, arg3) {
+  let w = getint();
+  let x = 0;
+  x = x + z;
+  x = x % 26;
+  z = floor(z / arg1);
+  x = x + arg2;
+  x = x == w ? 1 : 0;
+  x = x == 0 ? 1 : 0;
+  let y = 0;
+  y = y + 25;
+  y = y * x;
+  y = y + 1;
+  z = z * y;
+  y = 0;
+  y = y + w;
+  y = y + arg3;
+  y = y * x;
+  z = z + y;
+}
+
+
+function (arg1, arg2, arg3) {
+  let w = getint();
+  let x = z % 26 + arg2 != w ? 1 : 0;
+  z = floor(z / arg1);
+  let y = 25 * x + 1;
+  z = z * y;
+  y = (w + arg3) * x;
+  z = z + y;
+}
+
+function (arg1, arg2, arg3) {
+  let w = getint();
+  let xCond = z % 26 + arg2 != w;
+  z = floor(z / arg1);
+  if (xCond) {
+    z = 26 * z + w + arg3;
+  }
+}
+
+/*
+
+so, one safe way to end up with z = 0 is to always have
+
+    z % 26 + arg2 == w
+
+except that's not possible the first time through
+
+*/
+
+// what about expanding the whole thing?
+
+let xCond = z % 26 + arg2 != n[1];
+z = floor(z / arg1);
+if (xCond) {
+  z = 26 * z + w + arg3;
+}
+
+let xCond = z % 26 + 10 != n[1];
+if (xCond) {
+  z = 26 * z + n[1] + 12;
+}
+
+let xCond = z % 26 + 12 != n[2];
+if (xCond) {
+  z = 26 * z + n[2] + 7;
+}
+
+let xCond = z % 26 + 10 != n[3];
+if (xCond) {
+  z = 26 * z + n[3] + 8;
+}
+
+let xCond = z % 26 + 12 != n[4];
+if (xCond) {
+  z = 26 * z + n[4] + 8;
+}
+
+
+// ok, so we're working in base 26
+
+// step 1 is examine the first number in base 26
+const condition = b26.top() + arg2 != input;
+// step 2 is sometimes drop the last one
+if (maybe) {
+  b26.pop();
+}
+// step 3 is (maybe) push some number as the next one in base 26
+if (condition) {
+  b26.push(arg3 + input) // <-- this is always < 25
+}
+
+
+
+// now try to expand it?
+
+// arg1  <- 1,1,1,1,1,26,1,26,26,1,26,26,26,26
+// arg2  <- 10,12,10,12,11,-16,10,-11,-13,13,-8,-1,-4,-14
+// arg3  <- 12,7,8,8,15,12,8,13,3,13,3,9,4,13
+
+process([1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+
+// work through bit by bit, assuming the happy path
+// step  1 succeeds push input[0] + 12
+// step  2 succeeds push input[1] + 7
+// step  3 succeeds push input[2] + 8
+// step  4 succeeds push input[3] + 8
+// step  5 succeeds push input[4] + 15
+// step  6 could fail if input[5] == input[4] + 15 - 16
+//                  i.e. input[5] == input[4] - 1
+// step  7 succeeds push input[6] + 8
+// step  8 could fail if input[7] == input[6] + 8 - 11
+//                  i.e. input[7] == input[6] - 3
+// step  9 could fail if input[8] == input[3] + 8 - 13
+//                  i.e. input[8] == input[3] - 5
+// step 10 succeeds push input[9] + 13
+// step 11 could fail if input[10] == input[9] + 13 - 8
+//                  i.e. input[10] == input[9] + 5
+// step 12 could fail if input[11] == input[2] + 8 - 1
+//                  i.e. input[11] == input[2] + 7
+// step 13 could fail if input[12] == input[1] + 7 - 4
+//                  i.e. input[12] == input[1] + 3
+// step 13 could fail if input[13] == input[0] + 12 - 14
+//                  i.e. input[13] == input[0] - 2
+
+// so the conditions are:
+// input[13] == input[0] - 2
+// input[12] == input[1] + 3
+// input[11] == input[2] + 7
+// input[10] == input[9] + 5
+// input[ 8] == input[3] - 5
+// input[ 7] == input[6] - 3
+// input[ 5] == input[4] - 1
+
+
+// ^^ not quite! don't forget about the pops?
+
+process([9,6,2,9,9,8,9,6,4,4,9,9,9,7])
+process([3,1,1,6,2,1,4,1,1,1,6,8,4,1])
+31162141116841
+
+function process(input) {
+  results = []
+  z = []
+  function top(arr) {
+    return arr[arr.length - 1];
+  }
+  // 1 - 5 conditions always succeed, so they're just simply a push!
+  z.push(input[0] + 12);
+  results.push([...z]);
+  z.push(input[1] + 7);
+  results.push([...z]);
+  z.push(input[2] + 8);
+  results.push([...z]);
+  z.push(input[3] + 8);
+  results.push([...z]);
+  z.push(input[4] + 15);
+  results.push([...z]);
+  //6
+  if (top(z) + -16 != input[5]) {
+    z.pop();
+    z.push(input[5] + 12)
+  } else {
+    z.pop();
+  }
+  results.push([...z]);
+  //7
+  z.push(input[6] + 8)
+  results.push([...z]);
+  //8
+  if (top(z) + -11 != input[7]) {
+    z.pop();
+    z.push(input[7] + 13)
+  } else {
+    z.pop();
+  }
+  results.push([...z]);
+  //9
+  if (top(z) + -13 != input[8]) {
+    z.pop();
+    z.push(input[8] + 3)
+  } else {
+    z.pop();
+  }
+  results.push([...z]);
+  //10
+  z.push(input[9] + 13)
+  results.push([...z]);
+  //11
+  if (top(z) + -8 != input[10]) {
+    z.pop();
+    z.push(input[10] + 3)
+  } else {
+    z.pop();
+  }
+  results.push([...z]);
+  //12
+  if (top(z) + -1 != input[11]) {
+    z.pop();
+    z.push(input[11] + 9)
+  } else {
+    z.pop();
+  }
+  results.push([...z]);
+  //13
+  if (top(z) + -4 != input[12]) {
+    z.pop();
+    z.push(input[12] + 4)
+  } else {
+    z.pop();
+  }
+  results.push([...z]);
+  //14
+  if (top(z) + -14 != input[13]) {
+    z.pop();
+    z.push(input[13] + 13)
+  } else {
+    z.pop();
+  }
+  results.push([...z]);
+  return results
+}
