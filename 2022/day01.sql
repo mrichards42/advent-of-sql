@@ -14,24 +14,17 @@ create temp table provisions (
  * Parse input
  */
 
-create temp table raw_lines (
+create temp table raw_input (
   id int primary key generated always as identity,
   line text
 );
 
-create temp table raw_input (
-  input text
-);
-
-/* \copy raw_lines(line) FROM '2022/day01.sample.txt' */
-\copy raw_lines(line) FROM '2022/day01.txt'
-
-insert into raw_input
-select array_to_string(array(select line from raw_lines order by id), e'\n');
+/* \copy raw_input(line) FROM '2022/day01.sample.txt' */
+\copy raw_input(line) FROM '2022/day01.txt'
 
 insert into provisions
 select elf, calories::int
-from raw_input
+from (select string_agg(line, e'\n') from raw_input) as input(input)
 cross join lateral regexp_split_to_table(input, e'\n\n') with ordinality as _a(meal_lines, elf)
 cross join lateral regexp_split_to_table(meal_lines, e'\n') as _b(calories);
 
