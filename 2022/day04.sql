@@ -7,8 +7,8 @@
 
 create temp table assignment (
   pair int,
-  elf int,
-  section int
+  elf1_range int4range,
+  elf2_range int4range
 );
 
 /*
@@ -23,13 +23,13 @@ create temp table raw_input (
 /* \copy raw_input(line) FROM '2022/day04.sample.txt' */
 \copy raw_input(line) FROM '2022/day04.txt'
 
-
 insert into assignment
-select id, elf, section
+select
+  id,
+  int4range(numbers[1]::int, numbers[2]::int, '[]'),
+  int4range(numbers[3]::int, numbers[4]::int, '[]')
 from raw_input
-cross join lateral regexp_split_to_table(line, ',') with ordinality as _a(assignment_range, elf)
-cross join lateral regexp_split_to_array(assignment_range, '-') as _b(numbers)
-cross join lateral generate_series(numbers[1]::int, numbers[2]::int) as _c(section)
+cross join lateral regexp_split_to_array(line, ',|-') as _(numbers)
 ;
 
 /*
@@ -39,35 +39,15 @@ cross join lateral generate_series(numbers[1]::int, numbers[2]::int) as _c(secti
 -- Part 1: number of pairs with a fully-contained elf
 
 with
-overlap as (
-  select
-    assignment.*,
-    other is not null as has_overlap
-  from assignment
-  left join assignment as other
-    on assignment.pair = other.pair
-    and assignment.section = other.section
-    and assignment.elf <> other.elf
-),
-fully_contained_elf as (
-  select distinct pair, elf
-  from overlap
-  group by pair, elf
-  having count(*) filter (where has_overlap) = count(*)
-),
--- There are some ranges that are exactly the same, so count(*) would
--- over-count since both elves appear in fully_contained_elf
 part1(part, answer) as (
-  select 'part1', count(distinct pair)
-  from fully_contained_elf
+  select 'part1', count(*) from assignment
+  where elf1_range @> elf2_range or elf2_range @> elf1_range
 ),
 
 -- Part 2: number of pairs with any overlap
-
 part2(part, answer) as (
-  select 'part2', count(distinct pair)
-  from overlap
-  where has_overlap
+  select 'part2', count(*) from assignment
+  where elf1_range && elf2_range
 )
 
 -- Answers
