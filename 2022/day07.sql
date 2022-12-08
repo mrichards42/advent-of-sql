@@ -87,7 +87,6 @@ part1(part, answer) as (
 -- Part 2: best directory to delete
 
 free_space_needed as (
-  /* select 30000000 - (70000000 - sum(size)) as space */
   select sum(size) - (70000000 - 30000000) as space
   from total_dir_size
   where path = ''
