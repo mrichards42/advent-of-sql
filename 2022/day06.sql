@@ -1,5 +1,3 @@
-\timing on
-
 \c
 \echo --- Day 6: Tuning Trouble ---
 
