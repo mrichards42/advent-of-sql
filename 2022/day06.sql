@@ -6,7 +6,7 @@
  */
 
 create temp table datastream (
-  idx int,
+  idx int primary key,
   ch char
 );
 
