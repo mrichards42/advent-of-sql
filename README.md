@@ -4,7 +4,8 @@
 
 ```sh
 # Start postgres in docker
-docker run --rm -e POSTGRES_PASSWORD=friend -p5432:5432 postgres:14
+# I used pgrouting in 2022 b/c I got tired of writing slow dijkstra in sql
+docker run --rm -e POSTGRES_PASSWORD=friend -p5432:5432 corpusops/pgrouting-bare:14-3
 
 # Run a day via psql
 psql postgresql://postgres:friend@localhost:5432/postgres < 2021/day04.sql
