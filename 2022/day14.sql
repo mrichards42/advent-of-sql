@@ -2,8 +2,6 @@
 \echo --- Day 14: Regolith Reservoir ---
 \echo expect this to take 10+ seconds
 
-\timing on
-
 /*
  * Schema
  */
