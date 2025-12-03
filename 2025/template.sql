@@ -1,4 +1,3 @@
-\c
 \echo --- Day 0: Title ---
 
 /*
@@ -20,7 +19,7 @@ create temp table raw_input (
 );
 
 \copy raw_input(line) FROM '2025/day00.sample.txt'
-/* \copy raw_input(line) FROM '2025/day00.txt' */
+-- \copy raw_input(line) FROM '2025/day00.txt'
 
 insert into some_table
 select id, line
